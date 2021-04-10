@@ -3,7 +3,7 @@ package com.messageboard.model;
 import java.time.LocalDateTime;
 
 public class Post {
-	private Long Id;
+	private Long id;
 	private Long userId;
 	private String userName;
 	private String topic;
@@ -11,11 +11,11 @@ public class Post {
 	private LocalDateTime dateTime;
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public Long getUserId() {

@@ -29,9 +29,10 @@
 
 	<div class="loginDiv" id="login-page" class="page" align="center">
 		<h4 style="color: white">Please choose a name</h4>
-		<input type="text" id="username" value="${clientId}"
-			placeholder="Enter your name..." />
-		<button id="login">Done</button>
+		<input type="text" id="username" name="name"
+			placeholder="Enter your name..." /> <br> <input type="text"
+			id="avatarUrl" name="avatarUrl" placeholder="Enter Avatar Url..." />
+		<button id="login" onclick="createUser();">Done</button>
 	</div>
 
 	<div id="call-page" class="page" style="display: none;">
@@ -42,6 +43,35 @@
 		<button id="call">Call</button>
 		<button id="hang-up">Hang Up</button>
 	</div>
+
+	<script src="${contextPath}/resources/hananscripts/jquery-1.8.2.js"></script>
+
+	<script type="text/javascript">
+		function createUser() {
+			var username = $("#username").val();
+			//var avatarUrl = $("#avatarUrl").val();
+
+			if (!username || username.length === 0) {
+				alert("Username can not be empty!");
+			} else {
+				$.ajax({
+					type : 'POST',
+					url : 'rest/user/create',
+					data : {
+						name : username,
+						avatarUrl : 'nothing'
+					},
+					success : function(data) {
+						alert("status:" + data.returnCode + ": " + data.message);
+					},
+					error : function(xhr, status, error) {
+						  var err = eval("(" + xhr.responseText + ")");
+						  alert(err.Message);
+					}
+				});
+			}
+		}
+	</script>
 
 	<%-- 	<script src="${contextPath}/resources/webrtclibs/sswsNew.js"></script>
  --%>

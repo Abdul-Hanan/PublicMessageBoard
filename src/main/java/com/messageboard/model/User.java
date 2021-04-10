@@ -29,4 +29,21 @@ public class User {
 		this.avatarUrl = avatarUrl;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+
+		if (obj != null && obj instanceof User) {
+			if (this.username.equalsIgnoreCase(((User) obj).getUsername())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", avatarUrl=" + avatarUrl + "]";
+	}
+
 }
