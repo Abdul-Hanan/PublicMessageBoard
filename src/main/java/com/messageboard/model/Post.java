@@ -8,7 +8,7 @@ public class Post {
 	private String userName;
 	private String topic;
 	private String message;
-	private LocalDateTime dateTime;
+	private String dateTime;
 
 	public Long getId() {
 		return id;
@@ -42,11 +42,11 @@ public class Post {
 		this.message = message;
 	}
 
-	public LocalDateTime getDateTime() {
+	public String getDateTime() {
 		return dateTime;
 	}
 
-	public void setDateTime(LocalDateTime dateTime) {
+	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
 

@@ -33,7 +33,7 @@ public class UserService {
 			return ResponseEntity.badRequest().body(userResponse);
 		}
 
-		User user = javaStaticMemoryService.createUser(name, avatarUrl);
+		User user = javaStaticMemoryService.createUser(name.strip(), avatarUrl);
 
 		if (user == null) {
 			userResponse.setMessage("Username already exists please try a differ one.");
@@ -42,6 +42,7 @@ public class UserService {
 		} else {
 			userResponse.setMessage("User Created");
 			userResponse.setReturnCode(201);
+			userResponse.setUser(user);
 			return ResponseEntity.ok(userResponse);
 		}
 	}

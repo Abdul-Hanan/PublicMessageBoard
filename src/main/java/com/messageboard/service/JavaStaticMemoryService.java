@@ -7,14 +7,16 @@ import com.messageboard.model.User;
 
 
 public interface JavaStaticMemoryService {
+	
+	public Post createPost(Long userId, String userName, String topic, String message);
 
 	public void updatePostById(Long id, Post post);
 
-	public void deletePostById(Long id);
-
-	public void createPost(Post post);
+	public void deletePostById(Long id, Long postId);
 
 	public List<Post> findAllPosts();
 
 	public User createUser(String username, String imageUrl);
+	
+
 }

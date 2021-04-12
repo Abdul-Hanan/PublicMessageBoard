@@ -1,5 +1,6 @@
 package com.messageboard.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +26,13 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 		});
 	}
 
-	public void deletePostById(Long id) {
+	public void deletePostById(Long userId, Long postId) {
 		// TODO Auto-generated method stub
 		allPosts.forEach(P -> {
-			if (P.getId() == id) {
+			if (P.getId() == postId && P.getUserId()==userId) {
 				allPosts.remove(allPosts.indexOf(P));
 			}
 		});
-	}
-
-	public void createPost(Post post) {
-		allPosts.add(post);
 	}
 
 	public List<Post> findAllPosts() {
@@ -56,6 +53,32 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 			user.setId(userCountGlobal);
 			allUsers.add(user);
 			return user;
+		}
+
+	}
+
+	@Override
+	public Post createPost(Long userId, String userName, String topic, String message) {
+		// TODO Auto-generated method stub
+		
+		try {
+			postCountGlobal++;
+			
+			Post post = new Post();
+			post.setId(postCountGlobal);
+			post.setUserId(userId);
+			post.setUserName(userName);
+			post.setTopic(topic);
+			post.setMessage(message);
+			post.setDateTime(LocalDateTime.now().withNano(0).toString().replace("T", " "));
+
+			allPosts.add(post);
+			
+			return post;
+
+		} catch (Exception e) {
+			// Print Trace or log to any logging service
+			return null;
 		}
 
 	}

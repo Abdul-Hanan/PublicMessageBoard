@@ -16,4 +16,6 @@ public interface RedisService {
 	public List<Post> findAllPosts();
 
 	public User createUser(String username, String imageUrl);
+
+	public Long createPost(Long userId, String userName, String title, String message);
 }

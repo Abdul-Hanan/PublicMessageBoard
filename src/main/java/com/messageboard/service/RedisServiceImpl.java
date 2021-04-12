@@ -40,5 +40,11 @@ public class RedisServiceImpl implements RedisService {
 		return null;
 	}
 
+	@Override
+	public Long createPost(Long userId, String userName, String title, String message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
