@@ -1,7 +1,5 @@
 package com.messageboard.model;
 
-import java.time.LocalDateTime;
-
 public class Post {
 	private Long id;
 	private Long userId;
@@ -56,6 +54,12 @@ public class Post {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", userId=" + userId + ", userName=" + userName + ", topic=" + topic + ", message="
+				+ message + ", dateTime=" + dateTime + "]";
 	}
 
 }

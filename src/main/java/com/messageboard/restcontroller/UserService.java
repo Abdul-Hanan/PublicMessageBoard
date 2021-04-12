@@ -1,8 +1,9 @@
 package com.messageboard.restcontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,8 @@ public class UserService {
 	JavaStaticMemoryService javaStaticMemoryService;
 
 	@PostMapping(value = "create")
-	public ResponseEntity<?> create(@RequestParam String name, @RequestParam String avatarUrl) {
+	public ResponseEntity<?> create(@RequestParam(required = true) String name,
+			@RequestParam(required = false) String avatarUrl) {
 
 		UserResponse userResponse = new UserResponse();
 
@@ -50,6 +52,11 @@ public class UserService {
 	@GetMapping(value = "printList")
 	public void list() {
 		JavaStaticMemoryServiceImpl.allUsers.forEach(x -> System.out.println(x));
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<?> handleMyException(Exception exception) {
+		return ResponseEntity.badRequest().body("Required Parameter not found.");
 	}
 
 }

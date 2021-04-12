@@ -5,23 +5,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.messageboard.model.Post;
 import com.messageboard.model.PostResponse;
-import com.messageboard.model.User;
-import com.messageboard.model.UserResponse;
 import com.messageboard.service.JavaStaticMemoryService;
-import com.messageboard.service.RedisService;
+import com.messageboard.service.JavaStaticMemoryServiceImpl;
 
 @RestController
 @RequestMapping("/message/*")
@@ -31,12 +28,13 @@ public class MessageService {
 	JavaStaticMemoryService javaStaticMemoryService;
 
 	@PostMapping(value = "create")
-	public ResponseEntity<?> create(@RequestParam Long userId, @RequestParam String userName,
-			@RequestParam String topic, @RequestParam String message) {
+	public ResponseEntity<?> create(@RequestParam(required = true) Long userId,
+			@RequestParam(required = true) String userName, @RequestParam(required = true) String topic,
+			@RequestParam(required = true) String message) {
 
 		PostResponse postResponse = new PostResponse();
 
-		if (userName == null || userName.isBlank() || userId == null || userId==0l) {
+		if (userName == null || userName.isBlank() || userId == null || userId == 0l) {
 			postResponse.setMessage("Unauthorized: username not found");
 			postResponse.setReturnCode(401);
 			return ResponseEntity.badRequest().body(postResponse);
@@ -66,16 +64,45 @@ public class MessageService {
 		}
 	}
 
-	@PutMapping(value = "/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public void modify(@PathVariable("id") Long id, @RequestBody Post post) {
-		javaStaticMemoryService.updatePostById(id, post);
+	@PutMapping(value = "update")
+	public ResponseEntity<PostResponse> modify(@RequestParam(required = true) Long userId,
+			@RequestParam(required = true) Long postId, @RequestParam(required = true) String topic,
+			@RequestParam(required = true) String message) {
+
+		PostResponse postResponse = new PostResponse();
+
+		Post updatedPost = javaStaticMemoryService.updatePostById(userId, postId, topic, message);
+
+		if (updatedPost != null) {
+			postResponse.setMessage("Successfully updated");
+			postResponse.setReturnCode(200);
+			postResponse.setPost(updatedPost);
+			return ResponseEntity.ok(postResponse);
+		} else {
+			postResponse.setMessage("Unable to update, please contact your system administrator");
+			postResponse.setReturnCode(500);
+			return ResponseEntity.badRequest().body(postResponse);
+		}
 	}
 
 	@DeleteMapping(value = "delete")
-	@ResponseStatus(HttpStatus.OK)
-	public void delete(@RequestParam Long userId , @RequestParam Long postId) {
-		javaStaticMemoryService.deletePostById(userId, postId);
+	public ResponseEntity<?> delete(@RequestParam(required = true) Long userId,
+			@RequestParam(required = true) Long postId) {
+
+		PostResponse postResponse = new PostResponse();
+
+		boolean deleted = javaStaticMemoryService.deletePostById(userId, postId);
+
+		if (deleted) {
+			postResponse.setMessage("Successfully Deleted");
+			postResponse.setReturnCode(200);
+			return ResponseEntity.ok(postResponse);
+		} else {
+			postResponse.setMessage("Unable to delete, please contact your system administrator");
+			postResponse.setReturnCode(500);
+			return ResponseEntity.badRequest().body(postResponse);
+		}
+
 	}
 
 	@GetMapping(value = "view")
@@ -83,4 +110,15 @@ public class MessageService {
 		List<Post> allPosts = javaStaticMemoryService.findAllPosts();
 		return new ResponseEntity<List<Post>>(allPosts, HttpStatus.OK);
 	}
+
+	@GetMapping(value = "printList")
+	public void list() {
+		JavaStaticMemoryServiceImpl.allPosts.forEach((x, y) -> System.out.println(y.toString()));
+	}
+
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<?> handleMyException(Exception exception) {
+		return ResponseEntity.badRequest().body("Required Parameter not found.");
+	}
+
 }

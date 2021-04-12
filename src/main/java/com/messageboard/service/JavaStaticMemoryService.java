@@ -10,13 +10,14 @@ public interface JavaStaticMemoryService {
 	
 	public Post createPost(Long userId, String userName, String topic, String message);
 
-	public void updatePostById(Long id, Post post);
+	public Post updatePostById(Long userId, Long postId, String topic, String message);
 
-	public void deletePostById(Long id, Long postId);
+	public boolean deletePostById(Long id, Long postId);
 
 	public List<Post> findAllPosts();
 
 	public User createUser(String username, String imageUrl);
+
 	
 
 }

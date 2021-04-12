@@ -11,6 +11,8 @@
 <meta name="author" content="hanan">
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
+<link rel="stylesheet" type="text/css"
+	href="${contextPath}/resources/hananscripts/bootstrap.css">
 
 <style>
 .body {
@@ -37,7 +39,7 @@
 }
 
 .buttonCustom {
-	margin-top: 23px;
+	margin-top: 5px;
 	background-color: #FF7361;
 	font-size: 14px;
 	padding: 5px 10px 5px 10px;
@@ -48,11 +50,36 @@
 
 </head>
 <body class="body">
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit post</h4>
+        </div>
+        <div class="modal-body">
+        <input type="hidden" id="postIdModal">
+        <input id='postTopicModal' style="height: 25px; width: 30%"
+				placeholder="please type your post topic here..." /> <input
+				id='postMessageModal' style="height: 25px; width: 80%"
+				placeholder="please type your post message here..." />
+				<br>
+			<button id="postsubmitModal" class="buttonCustom" onclick="updatePost();">Update</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 
 	<div class="loginDiv" id="loginDiv" class="page" align="center">
 		<h4 style="color: white">Please choose a name</h4>
 		<input type="text" id="username" name="name"
-			placeholder="Enter your name..." /> <br> <br> <input
+			placeholder="Enter your name..." /> <br> <input
 			type="text" id="avatarUrl" name="avatarUrl"
 			placeholder="Enter Avatar Url..." /> <br>
 		<button id="login" class="buttonCustom" onclick="createUser();">Done</button>
@@ -73,34 +100,67 @@
 	</div>
 
 	<script src="${contextPath}/resources/hananscripts/jquery-1.8.2.js"></script>
-
+	<script src="${contextPath}/resources/hananscripts/bootstrap.min.js"></script>
+	
 	<script type="text/javascript">
 	
-		function updatePost(postid){
+		function showUpdatePostModal(postid, posttopic ,postmessage){
 			
-			$.ajax({
-				type : 'DELETE',
-				url : 'message/create',
-				data : {
-					userId : sessionStorage.getItem("userID"),
-					postId : postid
-				},
-				success : function(data) {
-					$("#postno"+postid).remove();
-				},
-				error : function(xhr, status, error) {
-					var data = JSON.parse(xhr.responseText);
-					alert("Status: " + data.returnCode + " : "
-							+ data.message);
-				}
-			});
+			 $('#postIdModal').val(postid);
+			 $('#postTopicModal').val(posttopic);
+			 $('#postMessageModal').val(postmessage);
+			 
+			 $('#editModal').modal('show');
+			
+		}
+		
+		function updatePost(){
+			
+			var postid = $('#postIdModal').val();
+			var postTopic = $('#postTopicModal').val();
+			var postMessage = $('#postMessageModal').val();
+			
+			if (!postid || postid.length === 0) {
+				
+			} else if (!postTopic || postTopic.length === 0) {
+				alert("Post topic can not be empty!");
+			} else if (!postMessage || postMessage.length === 0) {
+				var postmessage = $("#postmessage").val();
+			} else{
+				
+				$.ajax({
+					type : 'PUT',
+					url : 'message/update',
+					data : {
+						userId : sessionStorage.getItem("userID"),
+						postId : postid,
+						topic : postTopic,
+						message : postMessage	
+					},
+					success : function(data) {
+						var post = data.post;
+						$("#postno"+postid).html("<div class='col-md-1'><div><a href='#'><img src='https://image.flaticon.com/icons/png/512/147/147144.png' alt='image' style='height: 40px;vertical-align:middle'>"
+								+"</a><span>&nbsp; "+post.userName+"</span>"
+								+"</div></div><div class='col-md-9'><div><div><h3>"+post.topic+"</h3></div><div><p>"+post.message+"</p></div></div><hr>"
+								+"</div><div class='col-md-2'><div><a href='#'><button type='button' class='buttonCustom' onclick=\"showUpdatePostModal("+post.id+",'"+post.topic+"','"+post.message+"');\"><i class='fa fa-comment' aria-hidden='true'>Edit</i>"
+								+"</button></a> <a href='#'><button type='button' class='buttonCustom' onclick='deletePost("+post.id+");'><i class='fa fa-user-circle-o' aria-hidden='true'>Delete</i>"
+								+"</button></a> <span>"+post.dateTime+"</span></div></div>");
+					},
+					error : function(xhr, status, error) {
+						var data = JSON.parse(xhr.responseText);
+						alert("Status: " + data.returnCode + " : "
+								+ data.message);
+					}
+				});
+				 $('#editModal').modal('hide');
+			}
 		}
 	
 		function deletePost(postid){
 			
 			$.ajax({
 				type : 'DELETE',
-				url : 'message/create',
+				url : 'message/delete',
 				data : {
 					userId : sessionStorage.getItem("userID"),
 					postId : postid
@@ -143,7 +203,7 @@
 						$("#newPostList").prepend("<div class='row' id='postno"+post.id+"' style='padding:20px; margin-top: 10px; background-color: #af9f73c4'><div class='col-md-1'><div><a href='#'><img src='https://image.flaticon.com/icons/png/512/147/147144.png' alt='image' style='height: 40px;vertical-align:middle'>"
 						+"</a><span>&nbsp; "+post.userName+"</span>"
 						+"</div></div><div class='col-md-9'><div><div><h3>"+post.topic+"</h3></div><div><p>"+post.message+"</p></div></div><hr>"
-						+"</div><div class='col-md-2'><div><a href='#'><button type='button' class='buttonCustom'><i class='fa fa-comment' aria-hidden='true'>Edit</i>"
+						+"</div><div class='col-md-2'><div><a href='#'><button type='button' class='buttonCustom' onclick=\"showUpdatePostModal("+post.id+",'"+post.topic+"','"+post.message+"');\"><i class='fa fa-comment' aria-hidden='true'>Edit</i>"
 						+"</button></a> <a href='#'><button type='button' class='buttonCustom' onclick='deletePost("+post.id+");'><i class='fa fa-user-circle-o' aria-hidden='true'>Delete</i>"
 						+"</button></a> <span>"+post.dateTime+"</span></div></div></div>");
 
