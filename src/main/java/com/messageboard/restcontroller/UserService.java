@@ -48,6 +48,27 @@ public class UserService {
 			return ResponseEntity.ok(userResponse);
 		}
 	}
+	
+	@PostMapping(value = "check")
+	public ResponseEntity<?> checkIfUserExists(@RequestParam(required = true) Long userId) {
+
+		UserResponse userResponse = new UserResponse();
+		
+		User user =  javaStaticMemoryService.checkIfUserExists(userId);
+
+		if (user == null) {
+			userResponse.setMessage("User Not found");
+			userResponse.setReturnCode(400);
+			return ResponseEntity.badRequest().body(userResponse);
+		} else {
+			userResponse.setMessage("User Exists");
+			userResponse.setReturnCode(200);
+			userResponse.setUser(user);
+			return ResponseEntity.ok(userResponse);
+		}
+	}
+	
+	
 
 	@GetMapping(value = "printList")
 	public void list() {

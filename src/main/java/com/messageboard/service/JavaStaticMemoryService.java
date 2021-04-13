@@ -18,6 +18,8 @@ public interface JavaStaticMemoryService {
 
 	public User createUser(String username, String imageUrl);
 
+	public User checkIfUserExists(Long userId);
+
 	
 
 }

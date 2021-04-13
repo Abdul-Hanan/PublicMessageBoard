@@ -20,27 +20,25 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 	private static Long userCountGlobal = 0l;
 	private static Long postCountGlobal = 0l;
 
-	
 	@Override
 	public Post updatePostById(Long userId, Long postId, String topic, String message) {
-		
+
 		Post post = null;
-		
+
 		if (allPosts.containsKey(postId)) {
 			if (allPosts.get(postId).getUserId() == userId) {
-				
+
 				post = allPosts.get(postId);
 				post.setDateTime(LocalDateTime.now().withNano(0).toString().replace("T", " "));
 				post.setTopic(topic);
 				post.setMessage(message);
-				
+
 				allPosts.put(postId, post);
-				
+
 			}
 		}
 		return post;
 	}
-
 
 	public boolean deletePostById(Long userId, Long postId) {
 		// TODO Auto-generated method stub
@@ -103,5 +101,18 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 			return null;
 		}
 
+	}
+
+	@Override
+	public User checkIfUserExists(Long userId) {
+		// TODO Auto-generated method stub
+		User user = null;
+		for (User u : allUsers) {
+			if (u.getId() == userId) {
+				user = u;
+			}
+		}
+
+		return user;
 	}
 }

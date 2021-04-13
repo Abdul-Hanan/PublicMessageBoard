@@ -93,6 +93,7 @@
 				id='postmessage' style="height: 25px; width: 80%"
 				placeholder="please type your post message here..." />
 			<button id="postsubmit" class="buttonCustom" onclick="createPost();">Post</button>
+			<button id="refresh" class="buttonCustom" onclick="pullPosts();">Refresh</button>
 		</div>
 		<div class="newPostList" id="newPostList">
 
@@ -103,6 +104,35 @@
 	<script src="${contextPath}/resources/hananscripts/bootstrap.min.js"></script>
 	
 	<script type="text/javascript">
+	
+		$(document).ready(function () {
+		  //load all the posts from the list
+		  if(sessionStorage.getItem('userID') != null){
+			  var user = sessionStorage.getItem('userID');
+					$.ajax({
+						type : 'POST',
+						url : 'rest/user/check',
+						data : {
+							userId : user
+						},
+						success : function(data) {
+							var user = data.user;
+							
+							sessionStorage.setItem("userID", user.id);
+							sessionStorage.setItem("name", user.username);
+							sessionStorage.setItem("avatarUrl", user.avatarUrl);
+
+							$("#loginDiv").css('display', "none");
+
+							$("#welcomeName")
+									.html("Welcome " + user.username + "!");
+							$("#postDiv").css('display', "block");
+							
+							pullPosts();
+						}
+					});
+				}
+		  });
 	
 		function showUpdatePostModal(postid, posttopic ,postmessage){
 			
@@ -126,7 +156,7 @@
 				alert("Post topic can not be empty!");
 			} else if (!postMessage || postMessage.length === 0) {
 				var postmessage = $("#postmessage").val();
-			} else{
+			} else {
 				
 				$.ajax({
 					type : 'PUT',
@@ -152,7 +182,8 @@
 								+ data.message);
 					}
 				});
-				 $('#editModal').modal('hide');
+				
+				$('#editModal').modal('hide');
 			}
 		}
 	
@@ -196,17 +227,8 @@
 						message : postmessage
 					},
 					success : function(data) {
-						
 						var post = data.post;
-						
-						// Now that we have the Post object lets append the post in the div
-						$("#newPostList").prepend("<div class='row' id='postno"+post.id+"' style='padding:20px; margin-top: 10px; background-color: #af9f73c4'><div class='col-md-1'><div><a href='#'><img src='https://image.flaticon.com/icons/png/512/147/147144.png' alt='image' style='height: 40px;vertical-align:middle'>"
-						+"</a><span>&nbsp; "+post.userName+"</span>"
-						+"</div></div><div class='col-md-9'><div><div><h3>"+post.topic+"</h3></div><div><p>"+post.message+"</p></div></div><hr>"
-						+"</div><div class='col-md-2'><div><a href='#'><button type='button' class='buttonCustom' onclick=\"showUpdatePostModal("+post.id+",'"+post.topic+"','"+post.message+"');\"><i class='fa fa-comment' aria-hidden='true'>Edit</i>"
-						+"</button></a> <a href='#'><button type='button' class='buttonCustom' onclick='deletePost("+post.id+");'><i class='fa fa-user-circle-o' aria-hidden='true'>Delete</i>"
-						+"</button></a> <span>"+post.dateTime+"</span></div></div></div>");
-
+						prependToPostList(post);
 					},
 					error : function(xhr, status, error) {
 						var data = JSON.parse(xhr.responseText);
@@ -247,11 +269,9 @@
 						$("#welcomeName")
 								.html("Welcome " + user.username + "!");
 						$("#postDiv").css('display', "block");
+						
+						pullPosts();
 
-						/* localStorage.setItem("time", "123");
-						localStorage.setItem("userID", user.id);
-						localStorage.setItem("name", user.username);
-						 */
 					},
 					error : function(xhr, status, error) {
 						var data = JSON.parse(xhr.responseText);
@@ -259,6 +279,39 @@
 								+ data.message);
 					}
 				});
+			}
+		}
+		
+		function pullPosts(){
+			$.ajax({
+				type : 'GET',
+				url : 'message/view',
+				success : function(data) {
+					var posts = data;
+					for (i = 0; i < posts.length; i++) {						
+						prependToPostList(posts[i]);
+					}
+				}
+			});
+		}
+		
+		function prependToPostList(post){
+			//console.log(post);
+			
+			var user = sessionStorage.getItem('userID');
+
+			if(user == post.userId){
+				$("#newPostList").prepend("<div class='row' id='postno"+post.id+"' style='padding:20px; margin-top: 10px; background-color: #af9f73c4'><div class='col-md-1'><div><a href='#'><img src='https://image.flaticon.com/icons/png/512/147/147144.png' alt='image' style='height: 40px;vertical-align:middle'>"
+						+"</a><span>&nbsp; "+post.userName+"</span>"
+						+"</div></div><div class='col-md-9'><div><div><h3>"+post.topic+"</h3></div><div><p>"+post.message+"</p></div></div><hr>"
+						+"</div><div class='col-md-2'><div><a href='#'><button type='button' class='buttonCustom' onclick=\"showUpdatePostModal("+post.id+",'"+post.topic+"','"+post.message+"');\"><i class='fa fa-comment' aria-hidden='true'>Edit</i>"
+						+"</button></a> <a href='#'><button type='button' class='buttonCustom' onclick='deletePost("+post.id+");'><i class='fa fa-user-circle-o' aria-hidden='true'>Delete</i>"
+						+"</button></a> <span>"+post.dateTime+"</span></div></div></div>");
+			}else{
+				$("#newPostList").prepend("<div class='row' id='postno"+post.id+"' style='padding:20px; margin-top: 10px; background-color: #af9f73c4'><div class='col-md-1'><div><a href='#'><img src='https://image.flaticon.com/icons/png/512/147/147144.png' alt='image' style='height: 40px;vertical-align:middle'>"
+						+"</a><span>&nbsp; "+post.userName+"</span>"
+						+"</div></div><div class='col-md-9'><div><div><h3>"+post.topic+"</h3></div><div><p>"+post.message+"</p></div></div><hr>"
+						+"</div><div class='col-md-2'><div><span>"+post.dateTime+"</span></div></div></div>");
 			}
 		}
 	</script>
