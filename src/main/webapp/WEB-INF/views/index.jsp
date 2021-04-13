@@ -102,12 +102,9 @@
 
 	<script src="${contextPath}/resources/hananscripts/jquery-1.8.2.js"></script>
 	<script src="${contextPath}/resources/hananscripts/bootstrap.min.js"></script>
-	
-	<script type="text/javascript">
-	
-	var websocketconnection = null;
-	
-		$(document).ready(function () {
+
+ <script type="text/javascript">
+	$(document).ready(function () {
 		  if(sessionStorage.getItem('userID') != null){
 			  var user = sessionStorage.getItem('userID');
 					$.ajax({
@@ -131,7 +128,7 @@
 							$("#postDiv").css('display', "block");
 							
 							pullPosts();
-							setUpUserConnection();
+							//setUpUserConnection();
 						}
 					});
 				}
@@ -232,10 +229,6 @@
 					success : function(data) {
 						var post = data.post;
 						prependToPostList(post);
-						websocketconnection.send(JSON.stringify({
-							type : "notifyAll",
-							name : sessionStorage.getItem("name")
-						}));
 					},
 					error : function(xhr, status, error) {
 						var data = JSON.parse(xhr.responseText);
@@ -278,7 +271,7 @@
 						$("#postDiv").css('display', "block");
 						
 						pullPosts();
-						setUpUserConnection();
+						//setUpUserConnection();
 
 					},
 					error : function(xhr, status, error) {
@@ -302,6 +295,8 @@
 					}
 				}
 			});
+			
+			setTimeout(pullPosts, 3000);
 		}
 		
 		function prependToPostList(post){
@@ -323,61 +318,6 @@
 			}
 		}
 		
-		function setUpUserConnection(){
-			
-			var user = sessionStorage.getItem('userID');
-			websocketconnection = new WebSocket("wss://" + document.location.host+ "/signalingserver/" + user);
-			
-			//WebSocket Communication with Signalling Server
-			//Handle all messages through this callback
-			websocketconnection.onmessage = function(message) {
-				console.log("Got message", message.data);
-				var data = JSON.parse(message.data);
-				switch (data.type) {
-				case "login":
-					console.log("Success full socket communication.");
-					break;
-				case "refresh":
-					pullPosts();
-					break;
-				default:
-					break;
-				}
-			};
-
-			websocketconnection.onopen = function() {
-				console.log("Connected");
-				if (name.length > 0) {
-					websocketconnection.send(JSON.stringify({
-						type : "login",
-						name : sessionStorage.getItem("name")
-					}));
-				}
-			};
-
-			websocketconnection.onerror = function(err) {
-				console.log("Got error", err);
-			};
-		}
-
-	</script>
-
-	<%-- 	<script src="${contextPath}/resources/webrtclibs/sswsNew.js"></script>
- --%>
-	<!--  
- // Ok so Now On Login press i will hide the Login name section
- //	Redis will store this username and a id will be send back in the session and that id will be sent on every request
- 
- // The below section will Appear with Title, Message and Submit button
- //	When the Title is entered with Message and submit is pressed will check that they are not empty
- // Then the message will be send via AJAX and saved in the Redis
- // The Message should also have small icons of edit and delete. 
- 
- 
- // Web sockets
- // The login to the websocket will be with this username
- // Then the Websocket code will send this message to all logged in users as a update to append.
- 
- -->
+ </script>
 </body>
 </html>
