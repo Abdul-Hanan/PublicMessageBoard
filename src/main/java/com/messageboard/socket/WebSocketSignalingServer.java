@@ -1,4 +1,4 @@
-package com.messageboard.restcontroller;
+package com.messageboard.socket;
 
 import java.io.IOException;
 
@@ -79,7 +79,7 @@ public class WebSocketSignalingServer {
 						if (!X.equalsIgnoreCase(obj.getString("name"))) {
 							try {
 								Y.getBasicRemote().sendText(
-										"{ \"type\": \"msg\",\"msg\": \"" + obj.getString("message") + "\" }");
+										"{ \"type\": \"msg\",\"msg\": \"refresh\" }");
 							} catch (JSONException | IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.messageboard.model.Post;
 import com.messageboard.model.PostResponse;
 import com.messageboard.service.JavaStaticMemoryService;
-import com.messageboard.service.JavaStaticMemoryServiceImpl;
 
 @RestController
 @RequestMapping("/message/*")
@@ -109,11 +108,6 @@ public class MessageService {
 	public ResponseEntity<List<Post>> view() {
 		List<Post> allPosts = javaStaticMemoryService.findAllPosts();
 		return new ResponseEntity<List<Post>>(allPosts, HttpStatus.OK);
-	}
-
-	@GetMapping(value = "printList")
-	public void list() {
-		JavaStaticMemoryServiceImpl.allPosts.forEach((x, y) -> System.out.println(y.toString()));
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)

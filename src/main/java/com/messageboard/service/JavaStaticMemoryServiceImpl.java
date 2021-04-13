@@ -14,7 +14,6 @@ import com.messageboard.model.User;
 public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 
 	public static List<User> allUsers = new ArrayList<>();
-	// public static List<Post> allPosts = new ArrayList<>();
 	public static LinkedHashMap<Long, Post> allPosts = new LinkedHashMap<>();
 
 	private static Long userCountGlobal = 0l;
