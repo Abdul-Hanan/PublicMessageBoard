@@ -8,15 +8,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.messageboard.model.Post;
-import com.messageboard.model.User;
 
 @Service
-public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
+public class MessageServiceImpl implements MessageService {
 
-	public static List<User> allUsers = new ArrayList<>();
 	public static LinkedHashMap<Long, Post> allPosts = new LinkedHashMap<>();
-
-	private static Long userCountGlobal = 0l;
 	private static Long postCountGlobal = 0l;
 
 	@Override
@@ -59,23 +55,6 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 		return posts;
 	}
 
-	public User createUser(String username, String imageUrl) {
-		// TODO Auto-generated method stub
-		User user = new User();
-		user.setUsername(username);
-		user.setAvatarUrl(imageUrl);
-
-		if (allUsers.contains(user)) {
-			return null;
-		} else {
-			userCountGlobal++;
-			user.setId(userCountGlobal);
-			allUsers.add(user);
-			return user;
-		}
-
-	}
-
 	@Override
 	public Post createPost(Long userId, String userName, String topic, String message) {
 		// TODO Auto-generated method stub
@@ -100,18 +79,5 @@ public class JavaStaticMemoryServiceImpl implements JavaStaticMemoryService {
 			return null;
 		}
 
-	}
-
-	@Override
-	public User checkIfUserExists(Long userId) {
-		// TODO Auto-generated method stub
-		User user = null;
-		for (User u : allUsers) {
-			if (u.getId() == userId) {
-				user = u;
-			}
-		}
-
-		return user;
 	}
 }

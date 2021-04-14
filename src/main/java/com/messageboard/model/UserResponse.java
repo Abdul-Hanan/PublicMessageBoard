@@ -29,4 +29,16 @@ public class UserResponse {
 		this.user = user;
 	}
 
+	public UserResponse(String message, int returnCode, User user) {
+		super();
+		this.message = message;
+		this.returnCode = returnCode;
+		this.user = user;
+	}
+	
+	public UserResponse() {
+		
+	}
+	
+
 }

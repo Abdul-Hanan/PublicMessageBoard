@@ -46,4 +46,14 @@ public class User {
 		return "User [id=" + id + ", username=" + username + ", avatarUrl=" + avatarUrl + "]";
 	}
 
+	public User(Long id, String username, String avatarUrl) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.avatarUrl = avatarUrl;
+	}
+
+	public User() {
+		
+	}
 }

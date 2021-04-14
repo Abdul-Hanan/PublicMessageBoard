@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.messageboard.model.Post;
 import com.messageboard.model.PostResponse;
-import com.messageboard.service.JavaStaticMemoryService;
+import com.messageboard.service.MessageService;
 
 @RestController
 @RequestMapping("/message/*")
-public class MessageService {
+public class MessageRestController {
 
 	@Autowired
-	JavaStaticMemoryService javaStaticMemoryService;
+	MessageService messageService;
 
 	@PostMapping(value = "create")
 	public ResponseEntity<?> create(@RequestParam(required = true) Long userId,
@@ -49,7 +49,7 @@ public class MessageService {
 			return ResponseEntity.badRequest().body(postResponse);
 		}
 
-		Post post = javaStaticMemoryService.createPost(userId, userName, topic, message);
+		Post post = messageService.createPost(userId, userName, topic, message);
 
 		if (post == null) {
 			postResponse.setMessage("Unable to create post, please contact your system administrator.");
@@ -70,7 +70,7 @@ public class MessageService {
 
 		PostResponse postResponse = new PostResponse();
 
-		Post updatedPost = javaStaticMemoryService.updatePostById(userId, postId, topic, message);
+		Post updatedPost = messageService.updatePostById(userId, postId, topic, message);
 
 		if (updatedPost != null) {
 			postResponse.setMessage("Successfully updated");
@@ -90,7 +90,7 @@ public class MessageService {
 
 		PostResponse postResponse = new PostResponse();
 
-		boolean deleted = javaStaticMemoryService.deletePostById(userId, postId);
+		boolean deleted = messageService.deletePostById(userId, postId);
 
 		if (deleted) {
 			postResponse.setMessage("Successfully Deleted");
@@ -106,7 +106,7 @@ public class MessageService {
 
 	@GetMapping(value = "view")
 	public ResponseEntity<List<Post>> view() {
-		List<Post> allPosts = javaStaticMemoryService.findAllPosts();
+		List<Post> allPosts = messageService.findAllPosts();
 		return new ResponseEntity<List<Post>>(allPosts, HttpStatus.OK);
 	}
 
