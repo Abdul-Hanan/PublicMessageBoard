@@ -3,8 +3,8 @@ Public message board using Rest services (Spring boot)
 -For easy of use, i also deployed the public message board on https://pmess1.herokuapp.com/
 
 ## Requirements and Info
--The complete solution required JAVA 11 to run due to the use of isBlank() string operations.
--The Port for the application is 8085
+* The complete solution required JAVA 11 to run due to the use of isBlank() string operations.
+* The Port for the application is 8085
 -No Database is used for the solution, the solution uses static list to maintain the users and static hashmap to maintain the posts fo the message board.
 -Just import the project and use goals "mvn clean install" taking care that java 11 is selected, after that just run the application as a spring boot app.
 -Docker file is included
