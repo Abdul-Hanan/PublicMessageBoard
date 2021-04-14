@@ -1,6 +1,6 @@
 # Public Message Board
 Public message board using Rest services (Spring boot)
--For easy of use, i also deployed the public message board on https://pmess1.herokuapp.com/
+* For fun, i also deployed the public message board on https://pmess1.herokuapp.com/
 
 ## Requirements and Info
 * The complete solution required JAVA 11 to run due to the use of isBlank() string operations.
