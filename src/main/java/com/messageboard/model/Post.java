@@ -62,4 +62,17 @@ public class Post {
 				+ message + ", dateTime=" + dateTime + "]";
 	}
 
+	public Post(Long id, Long userId, String userName, String topic, String message) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.userName = userName;
+		this.topic = topic;
+		this.message = message;
+	}
+
+	public Post() {
+		
+	}
+	
 }

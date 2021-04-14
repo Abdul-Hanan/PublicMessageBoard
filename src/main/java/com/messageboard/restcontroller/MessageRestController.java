@@ -24,7 +24,7 @@ import com.messageboard.service.MessageService;
 public class MessageRestController {
 
 	@Autowired
-	MessageService messageService;
+	private MessageService messageService;
 
 	@PostMapping(value = "create")
 	public ResponseEntity<?> create(@RequestParam(required = true) Long userId,

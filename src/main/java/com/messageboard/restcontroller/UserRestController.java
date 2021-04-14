@@ -18,7 +18,7 @@ import com.messageboard.service.UserService;
 public class UserRestController {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@PostMapping(value = "create")
 	public ResponseEntity<?> create(@RequestParam(required = true) String name,
