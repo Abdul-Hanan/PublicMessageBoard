@@ -3,8 +3,11 @@ package com.messageboard.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.messageboard.model.User;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	public static List<User> allUsers = new ArrayList<>();
